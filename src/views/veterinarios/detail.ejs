@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2><%= veterinario.nombre %></h2>
+    <div class="nowrap">
+      <a class="btn small ghost" href="/veterinarios/<%= veterinario._id %>/editar">Editar</a>
+      <form class="inline-form" method="post" action="/veterinarios/<%= veterinario._id %>/eliminar" onsubmit="return confirm('¿Eliminar este veterinario?');">
+        <button class="btn small danger" type="submit">Eliminar</button>
+      </form>
+    </div>
+  </div>
+  <div class="panel-body">
+    <dl class="detalle">
+      <div><dt>Especialidad</dt><dd><%= veterinario.especialidad %></dd></div>
+      <div><dt>Licencia</dt><dd><%= veterinario.licencia %></dd></div>
+      <div><dt>Teléfono</dt><dd><%= veterinario.telefono %></dd></div>
+      <div><dt>Consultorio</dt><dd><%= veterinario.consultorio || '—' %></dd></div>
+      <div><dt>Estado</dt><dd><span class="badge <%= veterinario.activo ? 'activo' : 'inactivo' %>"><%= veterinario.activo ? 'Activo' : 'Inactivo' %></span></dd></div>
+      <div><dt>Registrado</dt><dd><%= formatearFecha(veterinario.createdAt) %></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Resumen de agenda</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Estado</th><th>Citas</th><th>Ingresos</th></tr></thead>
+      <tbody>
+        <% resumen.forEach(r => { %>
+          <tr>
+            <td><span class="badge <%= r._id.replace(/\s+/g, '-') %>"><%= r._id %></span></td>
+            <td><%= r.total %></td>
+            <td><%= formatearMoneda(r.ingresos) %></td>
+          </tr>
+        <% }) %>
+        <% if (!resumen.length) { %><tr><td colspan="3" class="vacio">Sin citas registradas.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Citas recientes</h2><a class="btn small primary" href="/citas/nueva">+ Agendar</a></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fecha</th><th>Paciente</th><th>Motivo</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        <% recientes.forEach(c => { %>
+          <tr>
+            <td class="nowrap"><%= formatearFecha(c.fecha, true) %></td>
+            <td><%= c.pacienteNombre || '—' %></td>
+            <td><%= c.motivo %></td>
+            <td><span class="badge <%= c.estado.replace(/\s+/g, '-') %>"><%= c.estado %></span></td>
+            <td class="right"><a class="btn small ghost" href="/citas/<%= c._id %>">Ver</a></td>
+          </tr>
+        <% }) %>
+        <% if (!recientes.length) { %><tr><td colspan="5" class="vacio">Sin citas recientes.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

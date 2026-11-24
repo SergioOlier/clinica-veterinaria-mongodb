@@ -1,0 +1,71 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2><%= modo === 'nuevo' ? 'Registrar paciente' : 'Editar paciente' %></h2>
+    <a class="btn ghost" href="/pacientes">← Volver</a>
+  </div>
+  <div class="panel-body">
+    <% if (errores.length) { %>
+      <div class="alert danger">
+        <strong>Revise los siguientes campos:</strong>
+        <ul><% errores.forEach(e => { %><li><%= e %></li><% }) %></ul>
+      </div>
+    <% } %>
+
+    <form method="post" action="<%= modo === 'nuevo' ? '/pacientes' : `/pacientes/${paciente._id}/actualizar` %>">
+      <div class="form-grid">
+        <div class="campo"><label for="nombre">Nombre *</label><input id="nombre" name="nombre" value="<%= valores.nombre %>" required></div>
+        <div class="campo">
+          <label for="especie">Especie *</label>
+          <select id="especie" name="especie" required>
+            <% ESPECIES.forEach(e => { %><option value="<%= e %>" <%= valores.especie === e ? 'selected' : '' %>><%= e %></option><% }) %>
+          </select>
+        </div>
+        <div class="campo"><label for="raza">Raza *</label><input id="raza" name="raza" value="<%= valores.raza %>" required></div>
+        <div class="campo">
+          <label for="sexo">Sexo *</label>
+          <select id="sexo" name="sexo" required>
+            <option value="Macho" <%= valores.sexo === 'Macho' ? 'selected' : '' %>>Macho</option>
+            <option value="Hembra" <%= valores.sexo === 'Hembra' ? 'selected' : '' %>>Hembra</option>
+          </select>
+        </div>
+        <div class="campo"><label for="fechaNacimiento">Fecha de nacimiento *</label><input id="fechaNacimiento" name="fechaNacimiento" type="date" value="<%= valores.fechaNacimiento %>" required></div>
+        <div class="campo"><label for="peso">Peso (kg) *</label><input id="peso" name="peso" type="number" step="0.1" min="0.1" max="120" value="<%= valores.peso %>" required></div>
+        <div class="campo full">
+          <label for="tutorId">Tutor *</label>
+          <select id="tutorId" name="tutorId" required>
+            <option value="">Seleccione un tutor</option>
+            <% tutores.forEach(t => { %>
+              <option value="<%= t._id %>" <%= valores.tutorIdTexto === t._id.toString() ? 'selected' : '' %>>
+                <%= t.nombre %> <%= t.apellido %> · <%= t.documento %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="campo full">
+          <label for="alergias">Alergias (separadas por coma)</label>
+          <input id="alergias" name="alergias" value="<%= valores.alergias %>" placeholder="Ej. Penicilina, Polen">
+        </div>
+      </div>
+
+      <% if (modo === 'nuevo') { %>
+        <h3 style="font-size:14px;margin:8px 0">Primera vacuna (opcional · arreglo embebido)</h3>
+        <div class="form-grid">
+          <div class="campo"><label for="vacunaNombre">Vacuna</label><input id="vacunaNombre" name="vacunaNombre" placeholder="Ej. Rabia"></div>
+          <div class="campo"><label for="vacunaFecha">Fecha de aplicación</label><input id="vacunaFecha" name="vacunaFecha" type="date"></div>
+          <div class="campo"><label for="vacunaProxima">Próxima dosis</label><input id="vacunaProxima" name="vacunaProxima" type="date"></div>
+        </div>
+      <% } else { %>
+        <p class="subtitle">Las vacunas se agregan y eliminan desde el detalle del paciente mediante <code>$push</code> y <code>$pull</code>.</p>
+      <% } %>
+
+      <div class="form-actions">
+        <a class="btn ghost" href="/pacientes">Cancelar</a>
+        <button class="btn primary" type="submit"><%= modo === 'nuevo' ? 'Guardar paciente' : 'Actualizar paciente' %></button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,13 @@
+<%- include('partials/header') %>
+
+<div class="error-box card">
+  <div class="icono">⚠️</div>
+  <h2>No se pudo completar la solicitud</h2>
+  <p class="subtitle"><%= mensaje %></p>
+  <% if (typeof detalle !== 'undefined' && detalle) { %>
+    <pre class="codigo"><%= detalle %></pre>
+  <% } %>
+  <p style="margin-top:18px"><a class="btn primary" href="/">Volver al panel</a></p>
+</div>
+
+<%- include('partials/footer') %>

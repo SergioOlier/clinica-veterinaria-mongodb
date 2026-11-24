@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Cita · <%= formatearFecha(cita.fecha, true) %></h2>
+    <div class="nowrap">
+      <a class="btn small ghost" href="/citas/<%= cita._id %>/editar">Editar</a>
+      <form class="inline-form" method="post" action="/citas/<%= cita._id %>/eliminar" onsubmit="return confirm('¿Eliminar esta cita?');">
+        <button class="btn small danger" type="submit">Eliminar</button>
+      </form>
+    </div>
+  </div>
+  <div class="panel-body">
+    <dl class="detalle">
+      <div><dt>Paciente</dt><dd><%= paciente ? `<a href="/pacientes/${paciente._id}">${paciente.nombre}</a>` : '—' %></dd></div>
+      <div><dt>Tutor</dt><dd><%= tutor ? `${tutor.nombre} ${tutor.apellido}` : '—' %></dd></div>
+      <div><dt>Veterinario</dt><dd><%= veterinario ? `<a href="/veterinarios/${veterinario._id}">${veterinario.nombre}</a>` : '—' %></dd></div>
+      <div><dt>Motivo</dt><dd><%= cita.motivo %></dd></div>
+      <div><dt>Estado</dt><dd><span class="badge <%= cita.estado.replace(/\s+/g, '-') %>"><%= cita.estado %></span></dd></div>
+      <div><dt>Duración</dt><dd><%= cita.duracionMin %> min</dd></div>
+      <div><dt>Costo</dt><dd><%= formatearMoneda(cita.costo) %></dd></div>
+      <div><dt>Registrada</dt><dd><%= formatearFecha(cita.createdAt, true) %></dd></div>
+    </dl>
+
+    <h3 style="font-size:14px;margin-top:8px">Signos vitales (embebidos)</h3>
+    <div class="grid-3">
+      <div class="card"><h3>Temperatura</h3><div class="valor" style="font-size:20px"><%= cita.signosVitales.temperatura %> °C</div></div>
+      <div class="card"><h3>Frecuencia cardíaca</h3><div class="valor" style="font-size:20px"><%= cita.signosVitales.frecuenciaCardiaca %> lpm</div></div>
+      <div class="card"><h3>Peso</h3><div class="valor" style="font-size:20px"><%= cita.signosVitales.peso %> kg</div></div>
+    </div>
+
+    <% if (cita.observaciones) { %>
+      <p style="margin-top:14px"><strong>Observaciones:</strong> <%= cita.observaciones %></p>
+    <% } %>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Servicios (array)</h2><span class="badge info"><%= cita.servicios.length %></span></div>
+  <div class="panel-body">
+    <div style="margin-bottom:12px">
+      <% cita.servicios.forEach(s => { %>
+        <form class="inline-form" method="post" action="/citas/<%= cita._id %>/servicios/eliminar">
+          <input type="hidden" name="servicio" value="<%= s %>">
+          <button class="badge info" style="border:none;cursor:pointer;margin-right:5px" type="submit" title="Eliminar con $pull"><%= s %> ✕</button>
+        </form>
+      <% }) %>
+      <% if (!cita.servicios.length) { %><span class="subtitle">Sin servicios registrados.</span><% } %>
+    </div>
+    <form class="filtros" method="post" action="/citas/<%= cita._id %>/servicios">
+      <div class="campo"><label for="nuevoServicio">Nuevo servicio</label><input id="nuevoServicio" name="nombre" placeholder="Ej. Laboratorio" required></div>
+      <button class="btn primary" type="submit">Agregar ($push)</button>
+    </form>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

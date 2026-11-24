@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Agenda de citas</h2>
+    <a class="btn primary" href="/citas/nueva">+ Nueva cita</a>
+  </div>
+  <div class="panel-body">
+    <form class="filtros" method="get" action="/citas">
+      <div class="campo">
+        <label for="q">Buscar</label>
+        <input id="q" name="q" value="<%= q %>" placeholder="Paciente, veterinario o motivo">
+      </div>
+      <div class="campo pequeño">
+        <label for="estado">Estado</label>
+        <select id="estado" name="estado">
+          <option value="">Todos</option>
+          <% estados.forEach(e => { %><option value="<%= e %>" <%= estado === e ? 'selected' : '' %>><%= e %></option><% }) %>
+        </select>
+      </div>
+      <div class="campo pequeño"><label for="desde">Desde</label><input id="desde" name="desde" type="date" value="<%= desde %>"></div>
+      <div class="campo pequeño"><label for="hasta">Hasta</label><input id="hasta" name="hasta" type="date" value="<%= hasta %>"></div>
+      <button class="btn primary" type="submit">Filtrar</button>
+      <a class="btn ghost" href="/citas">Limpiar</a>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fecha</th><th>Paciente</th><th>Veterinario</th><th>Motivo</th><th>Estado</th><th>Costo</th><th class="right">Acciones</th></tr></thead>
+      <tbody>
+        <% citas.forEach(c => { %>
+          <tr>
+            <td class="nowrap"><%= formatearFecha(c.fecha, true) %></td>
+            <td><a href="/pacientes/<%= c.pacienteId %>"><%= c.pacienteNombre || '—' %></a> <span class="subtitle"><%= c.pacienteEspecie %></span></td>
+            <td><%= c.veterinarioNombre || '—' %></td>
+            <td><%= c.motivo %></td>
+            <td><span class="badge <%= c.estado.replace(/\s+/g, '-') %>"><%= c.estado %></span></td>
+            <td><%= formatearMoneda(c.costo) %></td>
+            <td class="right nowrap">
+              <a class="btn small ghost" href="/citas/<%= c._id %>">Ver</a>
+              <a class="btn small ghost" href="/citas/<%= c._id %>/editar">Editar</a>
+            </td>
+          </tr>
+        <% }) %>
+        <% if (!citas.length) { %>
+          <tr><td colspan="7" class="vacio"><span class="icono">🔎</span>No se encontraron citas.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

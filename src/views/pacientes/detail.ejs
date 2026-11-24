@@ -1,0 +1,99 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2><%= paciente.nombre %> · <%= paciente.especie %></h2>
+    <div class="nowrap">
+      <a class="btn small ghost" href="/pacientes/<%= paciente._id %>/editar">Editar</a>
+      <form class="inline-form" method="post" action="/pacientes/<%= paciente._id %>/eliminar" onsubmit="return confirm('¿Eliminar este paciente? Se bloqueará si tiene citas.');">
+        <button class="btn small danger" type="submit">Eliminar</button>
+      </form>
+    </div>
+  </div>
+  <div class="panel-body">
+    <dl class="detalle">
+      <div><dt>Raza</dt><dd><%= paciente.raza %></dd></div>
+      <div><dt>Sexo</dt><dd><%= paciente.sexo %></dd></div>
+      <div><dt>Nacimiento</dt><dd><%= formatearFecha(paciente.fechaNacimiento) %></dd></div>
+      <div><dt>Peso</dt><dd><%= paciente.peso %> kg</dd></div>
+      <div><dt>Tutor</dt><dd><%= tutor ? `<a href="/tutores/${tutor._id}">${tutor.nombre} ${tutor.apellido}</a>` : '—' %></dd></div>
+      <div><dt>Registrado</dt><dd><%= formatearFecha(paciente.createdAt) %></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Vacunas (array embebido)</h2><span class="badge info"><%= paciente.vacunas.length %> registro(s)</span></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Vacuna</th><th>Aplicación</th><th>Próxima dosis</th><th class="right">Acción</th></tr></thead>
+      <tbody>
+        <% paciente.vacunas.forEach(v => { %>
+          <tr>
+            <td><%= v.nombre %></td>
+            <td><%= formatearFecha(v.fecha) %></td>
+            <td><%= v.proximaDosis ? formatearFecha(v.proximaDosis) : '—' %></td>
+            <td class="right">
+              <form class="inline-form" method="post" action="/pacientes/<%= paciente._id %>/vacunas/eliminar" onsubmit="return confirm('¿Eliminar esta vacuna?');">
+                <input type="hidden" name="vacunaId" value="<%= v._id %>">
+                <button class="btn small danger" type="submit">$pull</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+        <% if (!paciente.vacunas.length) { %><tr><td colspan="4" class="vacio">Sin vacunas registradas.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel-body">
+    <form class="filtros" method="post" action="/pacientes/<%= paciente._id %>/vacunas">
+      <div class="campo"><label for="nombreVacuna">Nombre</label><input id="nombreVacuna" name="nombre" placeholder="Ej. Distemper" required></div>
+      <div class="campo"><label for="fechaVacuna">Aplicación</label><input id="fechaVacuna" name="fecha" type="date" required></div>
+      <div class="campo"><label for="proximaVacuna">Próxima dosis</label><input id="proximaVacuna" name="proximaDosis" type="date"></div>
+      <button class="btn primary" type="submit">Agregar ($push)</button>
+    </form>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Alergias (array)</h2></div>
+  <div class="panel-body">
+    <div style="margin-bottom:12px">
+      <% paciente.alergias.forEach(a => { %>
+        <form class="inline-form" method="post" action="/pacientes/<%= paciente._id %>/alergias/eliminar">
+          <input type="hidden" name="alergia" value="<%= a %>">
+          <button class="badge danger" style="border:none;cursor:pointer;margin-right:5px" type="submit" title="Eliminar con $pull"><%= a %> ✕</button>
+        </form>
+      <% }) %>
+      <% if (!paciente.alergias.length) { %><span class="subtitle">Sin alergias registradas.</span><% } %>
+    </div>
+    <form class="filtros" method="post" action="/pacientes/<%= paciente._id %>/alergias">
+      <div class="campo"><label for="nuevaAlergia">Nueva alergia</label><input id="nuevaAlergia" name="alergia" placeholder="Ej. Penicilina" required></div>
+      <button class="btn primary" type="submit">Agregar ($addToSet)</button>
+    </form>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Historial de citas</h2><a class="btn small primary" href="/citas/nueva">+ Agendar cita</a></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fecha</th><th>Motivo</th><th>Veterinario</th><th>Estado</th><th>Costo</th><th></th></tr></thead>
+      <tbody>
+        <% citas.forEach(c => { %>
+          <tr>
+            <td class="nowrap"><%= formatearFecha(c.fecha, true) %></td>
+            <td><%= c.motivo %></td>
+            <td><%= c.veterinario?.nombre || '—' %></td>
+            <td><span class="badge <%= c.estado.replace(/\s+/g, '-') %>"><%= c.estado %></span></td>
+            <td><%= formatearMoneda(c.costo) %></td>
+            <td class="right"><a class="btn small ghost" href="/citas/<%= c._id %>">Ver</a></td>
+          </tr>
+        <% }) %>
+        <% if (!citas.length) { %><tr><td colspan="6" class="vacio">Este paciente no tiene citas.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

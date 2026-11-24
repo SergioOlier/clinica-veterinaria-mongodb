@@ -1,0 +1,23 @@
+{
+  "name": "clinica-veterinaria-mongodb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aplicación web CRUD + agregaciones con MongoDB para una clínica veterinaria",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "setup": "node scripts/setup-db.js",
+    "seed": "node scripts/seed.js",
+    "verify": "node scripts/verificar.js"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "mongodb": "^7.9.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

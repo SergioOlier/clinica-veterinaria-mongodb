@@ -1,0 +1,75 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-body">
+    <strong>Consultas avanzadas con el pipeline de agregación</strong>
+    <p class="subtitle" style="margin-top:5px">
+      Cada tarjeta muestra la pregunta de negocio, el pipeline ejecutado en MongoDB, un ejemplo de resultado,
+      el resultado actual de la base de datos y la interpretación gerencial. Operadores usados en conjunto:
+      <code>$match</code>, <code>$group</code>, <code>$sort</code>, <code>$lookup</code>, <code>$unwind</code>, <code>$project</code> y <code>$limit</code>.
+    </p>
+  </div>
+</section>
+
+<% reportes.forEach(reporte => { %>
+  <section class="panel reporte">
+    <div class="panel-head">
+      <div>
+        <h2><%= reporte.titulo %></h2>
+        <p class="pregunta"><strong>Pregunta de negocio:</strong> <%= reporte.pregunta %></p>
+      </div>
+      <span class="badge success"><%= reporte.datos.length %> fila(s)</span>
+    </div>
+
+    <div class="panel-body">
+      <p class="subtitle"><%= reporte.descripcion %></p>
+
+      <h3 style="font-size:13px;margin-top:16px">Resultado actual</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><% reporte.columns.forEach(col => { %><th><%= col.label %></th><% }) %></tr></thead>
+          <tbody>
+            <% reporte.datos.forEach(dato => { %>
+              <tr>
+                <% reporte.columns.forEach(col => { %>
+                  <td><%= formatearCelda(dato[col.key], col.key) %></td>
+                <% }) %>
+              </tr>
+            <% }) %>
+            <% if (!reporte.datos.length) { %>
+              <tr><td colspan="<%= reporte.columns.length %>" class="vacio">Sin datos para este reporte.</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid-2" style="margin-top:18px">
+        <div>
+          <h3 style="font-size:13px;margin-bottom:8px">Pipeline completo</h3>
+          <pre class="codigo"><%= JSON.stringify(reporte.pipeline, null, 2) %></pre>
+        </div>
+        <div>
+          <h3 style="font-size:13px;margin-bottom:8px">Ejemplo de resultado (semilla)</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><% reporte.columns.forEach(col => { %><th><%= col.label %></th><% }) %></tr></thead>
+              <tbody>
+                <% reporte.ejemplo.forEach(dato => { %>
+                  <tr>
+                    <% reporte.columns.forEach(col => { %>
+                      <td><%= formatearCelda(dato[col.key], col.key) %></td>
+                    <% }) %>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+          <div class="interpretacion" style="margin-top:12px"><strong>Interpretación:</strong> <%= reporte.interpretacion %></div>
+          <div class="pantalla">Pantalla: <%= reporte.pantalla %></div>
+        </div>
+      </div>
+    </div>
+  </section>
+<% }) %>
+
+<%- include('../partials/footer') %>

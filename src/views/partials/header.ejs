@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <% const tituloPagina = typeof titulo !== 'undefined' ? titulo : (ruta.startsWith('/tutores') ? 'Tutores' : ruta.startsWith('/pacientes') ? 'Pacientes' : ruta.startsWith('/veterinarios') ? 'Veterinarios' : ruta.startsWith('/citas') ? 'Citas' : ruta.startsWith('/reportes') ? 'Reportes' : 'Panel'); %>
+  <title><%= tituloPagina %> · Huellas</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <a class="brand" href="/">
+        <span class="brand-icon">🐾</span>
+        <span><strong>Huellas</strong><small>Clínica Veterinaria</small></span>
+      </a>
+
+      <nav class="nav">
+        <a class="<%= activoMenu('/') %>" href="/">📊 Panel</a>
+        <a class="<%= activoMenu('/tutores') %>" href="/tutores">👥 Tutores</a>
+        <a class="<%= activoMenu('/pacientes') %>" href="/pacientes">🐶 Pacientes</a>
+        <a class="<%= activoMenu('/veterinarios') %>" href="/veterinarios">🩺 Veterinarios</a>
+        <a class="<%= activoMenu('/citas') %>" href="/citas">📅 Citas</a>
+        <a class="<%= activoMenu('/reportes') %>" href="/reportes">📈 Reportes</a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span class="dot"></span> MongoDB + Node.js
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1><%= tituloPagina %></h1>
+          <p class="subtitle">Gestión de historias clínicas, citas y reportes</p>
+        </div>
+        <div class="topbar-actions">
+          <a class="btn ghost" href="/pacientes/nuevo">+ Paciente</a>
+          <a class="btn primary" href="/citas/nueva">+ Nueva cita</a>
+        </div>
+      </header>
+
+      <% if (mensaje) { %>
+        <div class="alert success">✓ <%= mensaje %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert danger">✕ <%= error %></div>
+      <% } %>

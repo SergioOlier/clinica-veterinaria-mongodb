@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2><%= modo === 'nueva' ? 'Agendar cita' : 'Editar cita' %></h2>
+    <a class="btn ghost" href="/citas">← Volver</a>
+  </div>
+  <div class="panel-body">
+    <% if (errores.length) { %>
+      <div class="alert danger">
+        <strong>Revise los siguientes campos:</strong>
+        <ul><% errores.forEach(e => { %><li><%= e %></li><% }) %></ul>
+      </div>
+    <% } %>
+
+    <form method="post" action="<%= modo === 'nueva' ? '/citas' : `/citas/${cita._id}/actualizar` %>">
+      <div class="form-grid">
+        <div class="campo full">
+          <label for="pacienteId">Paciente *</label>
+          <select id="pacienteId" name="pacienteId" required>
+            <option value="">Seleccione un paciente</option>
+            <% pacientes.forEach(p => { %>
+              <option value="<%= p._id %>" <%= valores.pacienteIdTexto === p._id.toString() ? 'selected' : '' %>><%= p.etiqueta %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="campo full">
+          <label for="veterinarioId">Veterinario *</label>
+          <select id="veterinarioId" name="veterinarioId" required>
+            <option value="">Seleccione un veterinario</option>
+            <% veterinarios.forEach(v => { %>
+              <option value="<%= v._id %>" <%= valores.veterinarioIdTexto === v._id.toString() ? 'selected' : '' %>>
+                <%= v.nombre %> · <%= v.especialidad %><%= v.activo ? '' : ' (inactivo)' %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="campo"><label for="fecha">Fecha y hora *</label><input id="fecha" name="fecha" type="datetime-local" value="<%= valores.fecha %>" required></div>
+        <div class="campo"><label for="motivo">Motivo *</label><input id="motivo" name="motivo" value="<%= valores.motivo %>" required></div>
+        <div class="campo">
+          <label for="estado">Estado *</label>
+          <select id="estado" name="estado" required>
+            <% estados.forEach(e => { %><option value="<%= e %>" <%= valores.estado === e ? 'selected' : '' %>><%= e %></option><% }) %>
+          </select>
+        </div>
+        <div class="campo"><label for="duracionMin">Duración (min) *</label><input id="duracionMin" name="duracionMin" type="number" min="15" max="180" step="15" value="<%= valores.duracionMin %>" required></div>
+        <div class="campo"><label for="costo">Costo (COP) *</label><input id="costo" name="costo" type="number" min="0" step="1000" value="<%= valores.costo %>" required></div>
+        <div class="campo"><label for="servicios">Servicios (separados por coma) *</label><input id="servicios" name="servicios" value="<%= valores.servicios %>" placeholder="Consulta, Vacunación" required></div>
+      </div>
+
+      <h3 style="font-size:14px;margin:10px 0">Signos vitales (subdocumento embebido · se actualiza con <code>$set</code>)</h3>
+      <div class="form-grid">
+        <div class="campo"><label for="temperatura">Temperatura (°C) *</label><input id="temperatura" name="temperatura" type="number" step="0.1" min="34" max="43" value="<%= valores.temperatura %>" required></div>
+        <div class="campo"><label for="frecuenciaCardiaca">Frecuencia cardíaca (lpm) *</label><input id="frecuenciaCardiaca" name="frecuenciaCardiaca" type="number" min="40" max="260" value="<%= valores.frecuenciaCardiaca %>" required></div>
+        <div class="campo"><label for="pesoVital">Peso (kg) *</label><input id="pesoVital" name="pesoVital" type="number" step="0.1" min="0.1" max="120" value="<%= valores.pesoVital %>" required></div>
+      </div>
+
+      <div class="campo full"><label for="observaciones">Observaciones</label><textarea id="observaciones" name="observaciones"><%= valores.observaciones %></textarea></div>
+
+      <div class="form-actions">
+        <a class="btn ghost" href="/citas">Cancelar</a>
+        <button class="btn primary" type="submit"><%= modo === 'nueva' ? 'Guardar cita' : 'Actualizar cita' %></button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

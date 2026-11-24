@@ -1,0 +1,69 @@
+<%- include('partials/header') %>
+
+<div class="cards">
+  <div class="card"><h3>Tutores</h3><div class="valor"><%= totals.tutores %></div><div class="pie">Responsables registrados</div></div>
+  <div class="card"><h3>Pacientes</h3><div class="valor"><%= totals.pacientes %></div><div class="pie">Historias clínicas activas</div></div>
+  <div class="card"><h3>Veterinarios</h3><div class="valor"><%= totals.veterinarios %></div><div class="pie">Profesionales en nómina</div></div>
+  <div class="card"><h3>Citas</h3><div class="valor"><%= totals.citas %></div><div class="pie">Agenda acumulada</div></div>
+  <div class="card accent"><h3>Ingresos completadas</h3><div class="valor"><%= formatearMoneda(ingresos) %></div><div class="pie">Suma de citas finalizadas</div></div>
+</div>
+
+<div class="grid-2">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Últimas citas</h2>
+      <a class="btn small ghost" href="/citas">Ver todas</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fecha</th><th>Paciente</th><th>Veterinario</th><th>Motivo</th><th>Estado</th></tr></thead>
+        <tbody>
+          <% recientes.forEach(cita => { %>
+            <tr>
+              <td class="nowrap"><%= formatearFecha(cita.fecha, true) %></td>
+              <td><a href="/pacientes/<%= cita.paciente?._id %>"><%= cita.pacienteNombre || '—' %></a></td>
+              <td><%= cita.veterinarioNombre || '—' %></td>
+              <td><%= cita.motivo %></td>
+              <td><span class="badge <%= cita.estado.replace(/\s+/g, '-') %>"><%= cita.estado %></span></td>
+            </tr>
+          <% }) %>
+          <% if (!recientes.length) { %>
+            <tr><td colspan="5" class="vacio">No hay citas registradas.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Distribución por estado</h2></div>
+    <div class="panel-body">
+      <% porEstado.forEach(item => { %>
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:13px">
+            <span><span class="badge <%= item._id.replace(/\s+/g, '-') %>"><%= item._id %></span></span>
+            <strong><%= item.total %></strong>
+          </div>
+          <div class="barra"><span style="width:<%= item.porcentaje %>%"></span></div>
+        </div>
+      <% }) %>
+      <% if (!porEstado.length) { %><p class="vacio">Sin datos.</p><% } %>
+    </div>
+  </section>
+</div>
+
+<section class="panel">
+  <div class="panel-body" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+    <div style="font-size:30px">🗂️</div>
+    <div style="flex:1;min-width:260px">
+      <strong>Modelo de documentos</strong>
+      <p class="subtitle" style="margin-top:4px">
+        Tutores con dirección embebida, pacientes con arreglo de vacunas, citas con signos vitales embebidos
+        y referencias por <code>ObjectId</code> a pacientes y veterinarios. Consulta los reportes con agregaciones.
+      </p>
+    </div>
+    <a class="btn primary" href="/reportes">Ver reportes →</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

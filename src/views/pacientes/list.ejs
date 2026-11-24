@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Listado de pacientes</h2>
+    <a class="btn primary" href="/pacientes/nuevo">+ Nuevo paciente</a>
+  </div>
+  <div class="panel-body">
+    <form class="filtros" method="get" action="/pacientes">
+      <div class="campo">
+        <label for="q">Buscar</label>
+        <input id="q" name="q" value="<%= q %>" placeholder="Paciente, raza o tutor">
+      </div>
+      <div class="campo pequeño">
+        <label for="especie">Especie</label>
+        <select id="especie" name="especie">
+          <option value="">Todas</option>
+          <% ESPECIES.forEach(e => { %>
+            <option value="<%= e %>" <%= especie === e ? 'selected' : '' %>><%= e %></option>
+          <% }) %>
+        </select>
+      </div>
+      <button class="btn primary" type="submit">Filtrar</button>
+      <a class="btn ghost" href="/pacientes">Limpiar</a>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Paciente</th><th>Especie</th><th>Raza</th><th>Tutor</th><th>Vacunas</th><th>Citas</th><th class="right">Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% pacientes.forEach(p => { %>
+          <tr>
+            <td><a href="/pacientes/<%= p._id %>"><%= p.nombre %></a></td>
+            <td><%= p.especie %></td>
+            <td><%= p.raza %></td>
+            <td><%= p.tutor ? `${p.tutor.nombre} ${p.tutor.apellido}` : '—' %></td>
+            <td><span class="badge info"><%= p.vacunas.length %></span></td>
+            <td><span class="badge"><%= p.totalCitas %></span></td>
+            <td class="right nowrap">
+              <a class="btn small ghost" href="/pacientes/<%= p._id %>">Ver</a>
+              <a class="btn small ghost" href="/pacientes/<%= p._id %>/editar">Editar</a>
+            </td>
+          </tr>
+        <% }) %>
+        <% if (!pacientes.length) { %>
+          <tr><td colspan="7" class="vacio"><span class="icono">🔎</span>No se encontraron pacientes.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

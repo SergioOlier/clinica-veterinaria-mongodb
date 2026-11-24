@@ -1,0 +1,74 @@
+erDiagram
+    TUTORES ||--o{ PACIENTES : "tutorId (ObjectId)"
+    PACIENTES ||--o{ CITAS : "pacienteId (ObjectId)"
+    VETERINARIOS ||--o{ CITAS : "veterinarioId (ObjectId)"
+
+    TUTORES {
+        ObjectId _id PK
+        string nombre
+        string apellido
+        string documento UK
+        string telefono
+        string email
+        DIRECCION direccion "embebido"
+        date createdAt
+    }
+
+    DIRECCION {
+        string calle
+        string ciudad
+        string codigoPostal
+    }
+
+    PACIENTES {
+        ObjectId _id PK
+        ObjectId tutorId FK
+        string nombre
+        string especie
+        string raza
+        string sexo
+        date fechaNacimiento
+        double peso
+        array vacunas "subdocumentos embebidos"
+        array alergias "strings"
+        date createdAt
+    }
+
+    VACUNAS {
+        ObjectId _id
+        string nombre
+        date fecha
+        date proximaDosis
+    }
+
+    VETERINARIOS {
+        ObjectId _id PK
+        string nombre
+        string especialidad
+        string licencia UK
+        string telefono
+        string consultorio
+        boolean activo
+        date createdAt
+    }
+
+    CITAS {
+        ObjectId _id PK
+        ObjectId pacienteId FK
+        ObjectId veterinarioId FK
+        date fecha
+        string motivo
+        string estado
+        double duracionMin
+        double costo
+        SIGNOS_VITALES signosVitales "embebido"
+        array servicios "strings"
+        string observaciones
+        date createdAt
+    }
+
+    SIGNOS_VITALES {
+        double temperatura
+        double frecuenciaCardiaca
+        double peso
+    }

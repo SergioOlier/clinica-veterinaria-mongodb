@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Listado de tutores</h2>
+    <a class="btn primary" href="/tutores/nuevo">+ Nuevo tutor</a>
+  </div>
+  <div class="panel-body">
+    <form class="filtros" method="get" action="/tutores">
+      <div class="campo">
+        <label for="q">Buscar</label>
+        <input id="q" name="q" value="<%= q %>" placeholder="Nombre, documento, correo o ciudad">
+      </div>
+      <button class="btn primary" type="submit">Buscar</button>
+      <a class="btn ghost" href="/tutores">Limpiar</a>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Tutor</th><th>Documento</th><th>Contacto</th><th>Ciudad</th><th>Mascotas</th><th class="right">Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% tutores.forEach(tutor => { %>
+          <tr>
+            <td><a href="/tutores/<%= tutor._id %>"><%= tutor.nombre %> <%= tutor.apellido %></a></td>
+            <td><%= tutor.documento %></td>
+            <td><%= tutor.telefono %><br><span class="subtitle"><%= tutor.email %></span></td>
+            <td><%= tutor.direccion.ciudad %></td>
+            <td><span class="badge info"><%= totales.get(tutor._id.toString()) || 0 %></span></td>
+            <td class="right nowrap">
+              <a class="btn small ghost" href="/tutores/<%= tutor._id %>">Ver</a>
+              <a class="btn small ghost" href="/tutores/<%= tutor._id %>/editar">Editar</a>
+            </td>
+          </tr>
+        <% }) %>
+        <% if (!tutores.length) { %>
+          <tr><td colspan="6" class="vacio"><span class="icono">🔎</span>No se encontraron tutores.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

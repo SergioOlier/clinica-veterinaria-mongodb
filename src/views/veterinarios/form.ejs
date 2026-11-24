@@ -1,0 +1,42 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2><%= modo === 'nuevo' ? 'Registrar veterinario' : 'Editar veterinario' %></h2>
+    <a class="btn ghost" href="/veterinarios">← Volver</a>
+  </div>
+  <div class="panel-body">
+    <% if (errores.length) { %>
+      <div class="alert danger">
+        <strong>Revise los siguientes campos:</strong>
+        <ul><% errores.forEach(e => { %><li><%= e %></li><% }) %></ul>
+      </div>
+    <% } %>
+
+    <form method="post" action="<%= modo === 'nuevo' ? '/veterinarios' : `/veterinarios/${veterinario._id}/actualizar` %>">
+      <div class="form-grid">
+        <div class="campo full"><label for="nombre">Nombre completo *</label><input id="nombre" name="nombre" value="<%= valores.nombre %>" placeholder="Ej. Dr. Ana Gómez" required></div>
+        <div class="campo">
+          <label for="especialidad">Especialidad *</label>
+          <select id="especialidad" name="especialidad" required>
+            <% ESPECIALIDADES.forEach(e => { %><option value="<%= e %>" <%= valores.especialidad === e ? 'selected' : '' %>><%= e %></option><% }) %>
+          </select>
+        </div>
+        <div class="campo"><label for="licencia">Licencia *</label><input id="licencia" name="licencia" value="<%= valores.licencia %>" placeholder="CO-12345" required></div>
+        <div class="campo"><label for="telefono">Teléfono *</label><input id="telefono" name="telefono" value="<%= valores.telefono %>" placeholder="3101234567" required></div>
+        <div class="campo"><label for="consultorio">Consultorio</label><input id="consultorio" name="consultorio" value="<%= valores.consultorio %>" placeholder="Ej. Consultorio 4"></div>
+        <div class="campo checkbox full">
+          <input id="activo" name="activo" type="checkbox" value="on" <%= valores.activo ? 'checked' : '' %>>
+          <label for="activo">Profesional activo</label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a class="btn ghost" href="/veterinarios">Cancelar</a>
+        <button class="btn primary" type="submit"><%= modo === 'nuevo' ? 'Guardar veterinario' : 'Actualizar veterinario' %></button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

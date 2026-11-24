@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Listado de veterinarios</h2>
+    <a class="btn primary" href="/veterinarios/nuevo">+ Nuevo veterinario</a>
+  </div>
+  <div class="panel-body">
+    <form class="filtros" method="get" action="/veterinarios">
+      <div class="campo">
+        <label for="q">Buscar</label>
+        <input id="q" name="q" value="<%= q %>" placeholder="Nombre, especialidad o licencia">
+      </div>
+      <div class="campo pequeño">
+        <label for="activo">Estado</label>
+        <select id="activo" name="activo">
+          <option value="">Todos</option>
+          <option value="true" <%= activo === 'true' ? 'selected' : '' %>>Activos</option>
+          <option value="false" <%= activo === 'false' ? 'selected' : '' %>>Inactivos</option>
+        </select>
+      </div>
+      <button class="btn primary" type="submit">Filtrar</button>
+      <a class="btn ghost" href="/veterinarios">Limpiar</a>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Profesional</th><th>Especialidad</th><th>Licencia</th><th>Consultorio</th><th>Citas</th><th>Estado</th><th class="right">Acciones</th></tr></thead>
+      <tbody>
+        <% veterinarios.forEach(v => { %>
+          <tr>
+            <td><a href="/veterinarios/<%= v._id %>"><%= v.nombre %></a></td>
+            <td><%= v.especialidad %></td>
+            <td><%= v.licencia %></td>
+            <td><%= v.consultorio || '—' %></td>
+            <td><span class="badge info"><%= totales.get(v._id.toString()) || 0 %></span></td>
+            <td><span class="badge <%= v.activo ? 'activo' : 'inactivo' %>"><%= v.activo ? 'Activo' : 'Inactivo' %></span></td>
+            <td class="right nowrap">
+              <a class="btn small ghost" href="/veterinarios/<%= v._id %>">Ver</a>
+              <a class="btn small ghost" href="/veterinarios/<%= v._id %>/editar">Editar</a>
+            </td>
+          </tr>
+        <% }) %>
+        <% if (!veterinarios.length) { %>
+          <tr><td colspan="7" class="vacio"><span class="icono">🔎</span>No se encontraron veterinarios.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>
