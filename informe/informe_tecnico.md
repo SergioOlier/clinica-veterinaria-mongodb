@@ -3,7 +3,7 @@
 **Aplicación:** Huellas · Clínica Veterinaria  
 **Tecnologías:** Node.js, Express, EJS, MongoDB (driver oficial)  
 **Fecha de entrega:** 24 de noviembre de 2026  
-**Estudiante:** Sergi  
+**Estudiante:** Sergio Olier Meza - Christian Ardila Gonzales
 **Profesor:** Ing. Carlos Alberto García Castro — Electiva IV  
 **Fundación Universitaria Tecnológico Comfenalco**
 
