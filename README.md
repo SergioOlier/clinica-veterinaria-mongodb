@@ -141,12 +141,4 @@ informe/
 
 ---
 
-## 9. Guion rápido de sustentación
 
-1. Mostrar `/` con los totales (1820 documentos).
-2. Crear un tutor, un paciente y una cita desde los formularios.
-3. En el detalle del paciente, agregar una vacuna con `$push` y quitarla con `$pull`.
-4. Editar una cita y cambiar los signos vitales (actualización del subdocumento con `$set`).
-5. Intentar eliminar un tutor con pacientes: debe bloquearse.
-6. Abrir `/reportes` y explicar cada pipeline, resultado e interpretación.
-7. Ejecutar `npm run verify` en consola como evidencia adicional.
